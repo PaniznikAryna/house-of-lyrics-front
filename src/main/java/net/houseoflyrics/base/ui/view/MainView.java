@@ -11,7 +11,7 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 /**
  * This view shows up when a user navigates to the root ('/') of the application.
  */
-@Route
+@Route("home")
 public final class MainView extends Main {
 
     // TODO Replace with your own main view.

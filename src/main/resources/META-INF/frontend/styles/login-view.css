@@ -1,0 +1,28 @@
+/* login-view.css */
+
+/* Переопределяем стили автозаполнения для инпутов, чтобы фон оставался нужным и текст был чёрным */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px rgba(205, 161, 124, 1) inset !important;
+  -webkit-text-fill-color: black !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+}
+
+/* Если браузер применяет какие-либо цвета к лейблам при фокусе или автозаполнении, можно принудительно задать их чёрными: */
+input:-webkit-autofill ~ label,
+textarea:-webkit-autofill ~ label,
+select:-webkit-autofill ~ label {
+  color: black !important;
+}
+
+/* Отключаем любые переходы цвета для placeholder (если требуется) */
+::placeholder {
+  color: black !important;
+}

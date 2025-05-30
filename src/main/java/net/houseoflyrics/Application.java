@@ -9,16 +9,8 @@ import org.springframework.context.annotation.Bean;
 import java.time.Clock;
 
 @SpringBootApplication
-@Theme("default")
-public class Application implements AppShellConfigurator {
-
-    @Bean
-    public Clock clock() {
-        return Clock.systemDefaultZone(); // You can also use Clock.systemUTC()
-    }
-
+public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
-
 }

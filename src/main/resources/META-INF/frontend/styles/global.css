@@ -1,0 +1,63 @@
+/* Импорт шрифта Comfortaa через Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap');
+
+/* Переопределяем глобальные переменные Lumo */
+:root {
+  --lumo-font-family: 'Comfortaa', sans-serif;
+  --lumo-primary-color: black;
+  --lumo-primary-text-color: black;
+}
+
+/* Применяем шрифт ко всему документу */
+html, body {
+  font-family: var(--lumo-font-family);
+  margin: 0;
+  padding: 0;
+}
+
+/* Правило для заголовков */
+h2 {
+  color: black !important;
+}
+
+/* Правила автозаполнения для инпутов */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px rgba(205, 161, 124, 1) inset !important;
+  -webkit-text-fill-color: black !important;
+  text-shadow: 0 0 0 black !important;
+  background-color: rgba(205, 161, 124, 1) !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+}
+
+input:-webkit-autofill ~ label,
+textarea:-webkit-autofill ~ label,
+select:-webkit-autofill ~ label {
+  color: black !important;
+}
+
+::placeholder {
+  color: black !important;
+}
+
+/* Стили для ComboBox с темой custom-combo-box */
+vaadin-combo-box-overlay.custom-combo-box {
+  background-color: rgba(205, 161, 124, 1) !important;
+  /* Заставляем overlay открываться ниже поля */
+  top: 100% !important;
+  bottom: auto !important;
+  transform-origin: top center !important;
+}
+
+vaadin-combo-box-overlay.custom-combo-box::part(item) {
+  color: black;
+}
+
+
