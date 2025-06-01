@@ -13,11 +13,10 @@ import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.BeforeEvent;
-import com.vaadin.flow.router.HasUrlParameter;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.StreamResource;
+import net.houseoflyrics.base.ui.view.MainLayout;
+
 
 import java.io.IOException;
 import java.net.URI;
@@ -27,7 +26,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 
-@Route("lesson/course")
+
+@Route(value = "lesson/course")
 @PageTitle("Уроки")
 @CssImport("./styles/global.css")
 public class LessonsView extends Div implements HasUrlParameter<String> {
@@ -47,55 +47,6 @@ public class LessonsView extends Div implements HasUrlParameter<String> {
                 .set("margin", "0")
                 .set("padding", "0")
                 .set("overflow-x", "hidden");
-
-        // --- Блок "Добро пожаловать в Дом Лирики" ---
-        Div welcomeContainer = new Div();
-        welcomeContainer.getStyle()
-                .set("background-color", "rgba(42, 33, 26, 1)")
-                .set("width", "100%")
-                .set("padding", "1rem 0")
-                .set("min-height", "300px");
-
-        VerticalLayout wrapper = new VerticalLayout();
-        wrapper.setWidth("90%");
-        wrapper.getStyle().set("margin", "0 auto");
-
-        HorizontalLayout mainLayout = new HorizontalLayout();
-        mainLayout.setWidthFull();
-        mainLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-        // Добавлено выравнивание по вертикали (единственное изменение)
-        mainLayout.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
-        mainLayout.getStyle().set("flex-wrap", "wrap");
-
-        Image img1 = new Image("/images/home/001.png", "Фотография 001");
-        Image img6 = new Image("/images/home/006.png", "Фотография 006");
-
-        VerticalLayout col2 = new VerticalLayout();
-        col2.getStyle().set("width", "15%");
-        Image img2 = new Image("/images/home/002.png", "Фотография 002");
-        Image img3 = new Image("/images/home/003.png", "Фотография 003");
-        col2.add(img2, img3);
-
-        VerticalLayout col3 = new VerticalLayout();
-        col3.getStyle().set("width", "15%");
-        Image img4 = new Image("/images/home/004.png", "Фотография 004");
-        Image img5 = new Image("/images/home/005.png", "Фотография 005");
-        col3.add(img4, img5);
-
-        mainLayout.add(img1, col2, col3, img6);
-
-        Paragraph welcomeTitle = new Paragraph("Добро пожаловать в Дом Лирики");
-        welcomeTitle.getElement().setAttribute("style",
-                "color: white !important; font-size: 2.5rem; margin-left: 2.5rem;");
-        Paragraph welcomeSubtitle = new Paragraph("ваш личный карманный репетитор по музыке");
-        welcomeSubtitle.getElement().setAttribute("style",
-                "color: white !important; font-size: 1.75rem; margin-left: 2.5rem;");
-        Div welcomeText = new Div();
-        welcomeText.add(welcomeTitle, welcomeSubtitle);
-
-        wrapper.add(mainLayout, welcomeText);
-        welcomeContainer.add(wrapper);
-        container.add(welcomeContainer);
 
         // --- Полоска "Уроки" ---
         Div lessonsStripe = new Div();
@@ -155,7 +106,7 @@ public class LessonsView extends Div implements HasUrlParameter<String> {
 
                 H2 lessonTitle = new H2(lesson.getTitle());
 
-                // Исправление: контент без заголовка
+                // Контент без заголовка
                 String shortContent = lesson.getContent().replace(lesson.getTitle(), "").trim();
                 if (shortContent.length() > 150) {
                     shortContent = shortContent.substring(0, 150) + "...";
@@ -163,6 +114,11 @@ public class LessonsView extends Div implements HasUrlParameter<String> {
 
                 Paragraph lessonDescription = new Paragraph(shortContent);
 
+                // **Горизонтальный контейнер для кнопок**
+                HorizontalLayout buttonsLayout = new HorizontalLayout();
+                buttonsLayout.setSpacing(true);
+
+                // Кнопка "Открыть урок"
                 Button lessonButton = new Button("Открыть урок");
                 lessonButton.addClickListener(e ->
                         getUI().ifPresent(ui -> ui.navigate("lesson/" + lesson.getId()))
@@ -174,20 +130,40 @@ public class LessonsView extends Div implements HasUrlParameter<String> {
                         .set("border-radius", "5px")
                         .set("padding", "10px 15px")
                         .set("cursor", "pointer")
-                        .set("transition", "0.3s"); // Плавное изменение цвета
+                        .set("transition", "0.3s");
                 lessonButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-                lessonButton.getElement().setAttribute("onmouseover",
-                        "this.style.backgroundColor='rgba(205, 161, 124, 1)'; this.style.color='white'");
-                lessonButton.getElement().setAttribute("onmouseout",
-                        "this.style.backgroundColor='white'; this.style.color='black'");
 
-                lessonInfo.add(lessonTitle, lessonDescription, lessonButton);
+                buttonsLayout.add(lessonButton);
+                lessonInfo.add(lessonTitle, lessonDescription, buttonsLayout);
                 lessonBlock.add(lessonImage, lessonInfo);
                 lessonsList.add(lessonBlock);
             }
         }
         container.add(lessonsList);
+
+        // **Кнопка "Вернуться к курсам" внизу страницы**
+        Div bottomButtonContainer = new Div();
+        bottomButtonContainer.getStyle()
+                .set("width", "100%")
+                .set("text-align", "center")
+                .set("padding", "1rem 0")
+                .set("background-color", "rgba(221, 189, 158, 1)");;
+
+        Button backToCoursesButton = new Button("Вернуться к курсам");
+        backToCoursesButton.getStyle()
+                .set("background-color", "white")
+                .set("color", "black")
+                .set("border", "1px solid black")
+                .set("border-radius", "5px")
+                .set("padding", "10px 15px")
+                .set("cursor", "pointer")
+                .set("transition", "0.3s");
+        backToCoursesButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("courses")));
+
+        bottomButtonContainer.add(backToCoursesButton);
+        container.add(bottomButtonContainer);
+
         add(container);
     }
 
@@ -206,6 +182,7 @@ public class LessonsView extends Div implements HasUrlParameter<String> {
             return null;
         }
     }
+
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class LessonDTO {
         private int id;
@@ -232,5 +209,4 @@ public class LessonsView extends Div implements HasUrlParameter<String> {
         public String getPicture() { return picture; }
         public String getDescription() { return description; }
     }
-
 }

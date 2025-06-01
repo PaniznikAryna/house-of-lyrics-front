@@ -6,17 +6,20 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import net.houseoflyrics.base.ui.view.MainLayout;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-@Route("lesson")
+@Route(value = "lesson")
 @PageTitle("Урок")
 @CssImport("./styles/global.css")
 public class LessonDetailView extends Div implements HasUrlParameter<String> {
@@ -43,7 +46,7 @@ public class LessonDetailView extends Div implements HasUrlParameter<String> {
            =============================== */
         Div contentBlock = new Div();
         contentBlock.getStyle()
-                .set("background-color", "rgba(221,189,158,1)")
+                .set("background-color", "rgba(221,189,158,1)") // Убедился, что фон совпадает с основным
                 .set("width", "100%")
                 .set("padding", "2rem")
                 .set("box-sizing", "border-box");
@@ -68,11 +71,11 @@ public class LessonDetailView extends Div implements HasUrlParameter<String> {
 
             // Получаем содержимое урока
             String contentText = lesson.getContent();
-            // Если содержимое начинается с дублирующегося названия, удаляем его
             if (contentText != null && contentText.startsWith(lesson.getTitle())) {
                 contentText = contentText.substring(lesson.getTitle().length()).trim();
             }
-            // Чтобы сохранить переносы строк, заменяем\n на <br/>
+
+            // Сохраняем переносы строк, заменяя \n на <br/>
             String formattedContent = contentText.replaceAll("\\n", "<br/>");
             Div contentDiv = new Div();
             contentDiv.getElement().setProperty("innerHTML", formattedContent);
@@ -80,6 +83,7 @@ public class LessonDetailView extends Div implements HasUrlParameter<String> {
                     .set("font-size", "1.2rem")
                     .set("line-height", "1.6");
             innerContent.add(contentDiv);
+
         } else {
             H2 error = new H2("Урок не найден");
             error.getStyle().set("text-align", "center")
@@ -89,13 +93,21 @@ public class LessonDetailView extends Div implements HasUrlParameter<String> {
         contentBlock.add(innerContent);
 
         /* ===============================
-           Блок перехода на тест
+           Блок перехода к тесту и урокам
            =============================== */
-        Div testBlock = new Div();
-        testBlock.getStyle()
+        Div navBlock = new Div();
+        navBlock.getStyle()
                 .set("width", "100%")
                 .set("padding", "1rem")
-                .set("text-align", "center");
+                .set("text-align", "center")
+                .set("background-color", "rgba(221,189,158,1)"); // Исправил фон на цвет контента
+
+        // Горизонтальный блок для кнопок
+        HorizontalLayout buttonsLayout = new HorizontalLayout();
+        buttonsLayout.setSpacing(true);
+        buttonsLayout.getStyle().set("justify-content", "center");
+
+        // Кнопка «Перейти к тесту»
         Button testButton = new Button("Перейти к тесту");
         testButton.getStyle()
                 .set("background-color", "white")
@@ -106,13 +118,26 @@ public class LessonDetailView extends Div implements HasUrlParameter<String> {
                 .set("cursor", "pointer")
                 .set("transition", "0.3s");
         testButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("test/lesson/" + lessonId)));
-        testBlock.add(testButton);
 
-        container.add(contentBlock, testBlock);
+        // Кнопка «Вернуться к урокам»
+        Button backButton = new Button("Вернуться к урокам");
+        backButton.getStyle()
+                .set("background-color", "white")
+                .set("color", "black")
+                .set("border", "1px solid black")
+                .set("border-radius", "5px")
+                .set("padding", "10px 15px")
+                .set("cursor", "pointer")
+                .set("transition", "0.3s");
+        backButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("lesson/course/1")));
+
+        // Добавляем кнопки с отступом
+        buttonsLayout.add(testButton, backButton);
+        navBlock.add(buttonsLayout);
+        container.add(contentBlock, navBlock);
         add(container);
     }
 
-    // Метод для получения данных урока с бэкенда (GET /api/lesson/{lessonId})
     private LessonDTO fetchLesson(String lessonId) {
         try {
             HttpClient client = HttpClient.newHttpClient();
@@ -128,7 +153,6 @@ public class LessonDetailView extends Div implements HasUrlParameter<String> {
         }
     }
 
-    // Вложенный класс DTO для урока (игнорирует лишние поля)
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class LessonDTO {
         private Long id;
@@ -137,12 +161,8 @@ public class LessonDetailView extends Div implements HasUrlParameter<String> {
         private String picture;
 
         public Long getId() { return id; }
-        public void setId(Long id) { this.id = id; }
         public String getTitle() { return title; }
-        public void setTitle(String title) { this.title = title; }
         public String getContent() { return content; }
-        public void setContent(String content) { this.content = content; }
         public String getPicture() { return picture; }
-        public void setPicture(String picture) { this.picture = picture; }
     }
 }

@@ -15,6 +15,7 @@ import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import net.houseoflyrics.base.ui.view.MainLayout;
 import net.houseoflyrics.dto.MusicalInstrument;
 import net.houseoflyrics.dto.RegistrationData;
 import net.houseoflyrics.service.UserApiService;
@@ -26,7 +27,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Route("edit-profile")
+@Route(value = "edit-profile")
 @PageTitle("Редактирование профиля")
 @CssImport("./styles/global.css")
 public class EditProfileView extends VerticalLayout {

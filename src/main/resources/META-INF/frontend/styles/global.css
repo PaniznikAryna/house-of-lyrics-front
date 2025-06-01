@@ -20,6 +20,10 @@ h2 {
   color: black !important;
 }
 
+vaadin-radio-group {
+    flex-direction: column;
+}
+
 /* Правила автозаполнения для инпутов */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,

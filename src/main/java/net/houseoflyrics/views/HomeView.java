@@ -10,9 +10,11 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.ParentLayout;
 import com.vaadin.flow.router.Route;
+import net.houseoflyrics.base.ui.view.MainLayout;
 
-@Route("home-main")
+@Route(value = "home-main")
 @PageTitle("Дом Лирики - Главная")
 public class HomeView extends Div {
 
@@ -34,7 +36,7 @@ public class HomeView extends Div {
         wrapper.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.START);
         wrapper.getStyle().set("margin", "0 auto");
 
-        // Верхний блок (без изменений)
+        // Верхний блок
         HorizontalLayout mainLayout = new HorizontalLayout();
         mainLayout.setWidthFull();
         mainLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
@@ -89,7 +91,7 @@ public class HomeView extends Div {
 
         wrapper.add(mainLayout, textBlock);
 
-        /*---------- Нижний блок: расширяем содержимое ----------*/
+        /*---------- Нижний блок: ----------*/
         HorizontalLayout promoBlock = new HorizontalLayout();
         promoBlock.setWidth("100%");
         promoBlock.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
@@ -98,7 +100,7 @@ public class HomeView extends Div {
                 .set("padding", "1rem")
                 .set("margin", "2rem 0 0 0");
 
-        // Текстовый блок – расширен до 50% и выровнен по левому краю (без отдельных margin-left)
+
         VerticalLayout promoTextLayout = new VerticalLayout();
         promoTextLayout.setWidth("50%");
         promoTextLayout.setSpacing(true);
@@ -113,6 +115,7 @@ public class HomeView extends Div {
         promoPara2.getElement().setAttribute("style", "color: black; font-size: 1.25rem; text-align: left;");
 
         Button promoLink = new Button("Начать изучение");
+        Button libraryButton = new Button("Библиотека", e -> this.getUI().ifPresent(ui -> ui.navigate("music-library")));
         promoLink.getStyle().set("font-size", "1.25rem")
                 .set("background-color", "white")
                 .set("color", "black")
@@ -122,17 +125,22 @@ public class HomeView extends Div {
                 "this.addEventListener('mouseover', function() { this.style.backgroundColor = 'rgba(221, 189, 158, 1)'; });" +
                         "this.addEventListener('mouseout', function() { this.style.backgroundColor = 'white'; });"
         );
+        libraryButton.getStyle().set("font-size", "1.25rem")
+                .set("background-color", "white")
+                .set("color", "black")
+                .set("border", "1px solid black")
+                .set("transition", "background-color 0.3s ease-in-out");
+        libraryButton.getElement().executeJs(
+                "this.addEventListener('mouseover', function() { this.style.backgroundColor = 'rgba(221, 189, 158, 1)'; });" +
+                        "this.addEventListener('mouseout', function() { this.style.backgroundColor = 'white'; });"
+        );
         promoLink.addClickListener(e -> this.getUI().ifPresent(ui -> ui.navigate("courses")));
-        promoTextLayout.add(promoHeading, promoPara1, promoPara2, promoLink);
-
-        // Фотоблок – теперь на 40% ширины, как в предыдущем варианте,
-        // но уменьшаем размеры фотографий на 15-20 пикселей с помощью calc()
+        promoTextLayout.add(promoHeading, promoPara1, promoPara2, promoLink, libraryButton);
         VerticalLayout promoImagesLayout = new VerticalLayout();
         promoImagesLayout.setWidth("40%");
         promoImagesLayout.setSpacing(true);
         promoImagesLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
 
-        // Основное фото: вместо 100% теперь calc(100% - 20px)
         Image promoImg7 = new Image("/images/home/007.png", "Фотография 007");
         promoImg7.getStyle().set("width", "calc(100% - 20px)")
                 .set("height", "auto")
@@ -144,7 +152,6 @@ public class HomeView extends Div {
         promoBottomImages.setSpacing(true);
         promoBottomImages.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
 
-        // Два нижних фото: вместо 50% используем calc(50% - 10px)
         Image promoImg8 = new Image("/images/home/008.png", "Фотография 008");
         promoImg8.getStyle().set("width", "calc(50% - 10px)")
                 .set("height", "auto")

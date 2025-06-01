@@ -12,8 +12,10 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.ParentLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
+import net.houseoflyrics.base.ui.view.MainLayout;
 
 import java.io.IOException;
 import java.net.URI;
@@ -23,7 +25,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 
-@Route("courses")
+@Route(value = "courses")
 @PageTitle("Курсы")
 public class CoursesView extends Div {
 
@@ -52,7 +54,7 @@ public class CoursesView extends Div {
         mainLayout.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
         mainLayout.getStyle().set("flex-wrap", "wrap");
 
-        // Применяем стили, как на главной странице
+        //  стили, как на главной странице
         Image img1 = new Image("/images/home/001.png", "Фотография 001");
         img1.getStyle().set("width", "30%").set("height", "auto").set("cursor", "pointer");
         img1.addClickListener(e -> openImageDialog("001.png", "Фотография 001"));
